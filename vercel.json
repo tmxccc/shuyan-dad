@@ -1,4 +1,6 @@
 {
   "version": 2,
-  "name": "shuyan-dad-classroom"
+  "name": "shuyan-dad-classroom",
+  "outputDirectory": ".",
+  "buildCommand": "echo '静态文件无需构建'"
 } 
