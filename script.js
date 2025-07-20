@@ -371,9 +371,79 @@ class MultiplicationGame {
         }
     }
 
-    showQRCode() {
-        // 模拟显示二维码
-        alert('扫描二维码邀请小伙伴一起挑战！\n\n二维码功能需要后端支持，这里只是演示。');
+    async showQRCode() {
+        try {
+            // 生成房间ID
+            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const playerName = this.playerName || '玩家';
+            
+            // 调用API生成二维码
+            const response = await fetch('/api/qrcode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    roomId: roomId,
+                    playerName: playerName
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                // 显示二维码弹窗
+                this.showQRCodeModal(data.qrCode, data.roomUrl, roomId);
+            } else {
+                throw new Error('二维码生成失败');
+            }
+        } catch (error) {
+            console.error('二维码生成错误:', error);
+            // 降级到演示模式
+            alert('扫描二维码邀请小伙伴一起挑战！\n\n二维码功能需要后端支持，这里只是演示。');
+        }
+    }
+
+    showQRCodeModal(qrCodeDataUrl, roomUrl, roomId) {
+        // 创建二维码弹窗
+        const modal = document.createElement('div');
+        modal.className = 'qr-modal';
+        modal.innerHTML = `
+            <div class="qr-modal-content">
+                <div class="qr-modal-header">
+                    <h3>📱 邀请小伙伴</h3>
+                    <button class="qr-close-btn">&times;</button>
+                </div>
+                <div class="qr-modal-body">
+                    <div class="qr-code-container">
+                        <img src="${qrCodeDataUrl}" alt="房间二维码" class="qr-code-image">
+                    </div>
+                    <div class="qr-info">
+                        <p><strong>房间号:</strong> ${roomId}</p>
+                        <p><strong>玩家:</strong> ${this.playerName || '玩家'}</p>
+                        <p><strong>链接:</strong> <a href="${roomUrl}" target="_blank">${roomUrl}</a></p>
+                    </div>
+                    <div class="qr-instructions">
+                        <p>📱 用微信扫描二维码加入游戏</p>
+                        <p>🔗 或者点击链接直接加入</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 关闭按钮事件
+        modal.querySelector('.qr-close-btn').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        // 点击背景关闭
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
     }
 
     calculateRank() {

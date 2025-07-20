@@ -18,9 +18,12 @@
   ],
   "author": "舒彦爸爸爸",
   "license": "MIT",
+  "dependencies": {
+    "qrcode": "^1.5.3"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tmxccc/shuyanbaba.git"
   },
-  "homepage": "https://shuyanbaba.vercel.app"
+  "homepage": "https://shuyan-dad.vercel.app"
 } 

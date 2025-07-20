@@ -1693,3 +1693,125 @@ header {
         transform: translateX(-50%) translateY(0) scale(1);
     }
 } 
+
+/* 二维码弹窗样式 */
+.qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.qr-modal-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+.qr-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.qr-modal-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.qr-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.qr-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.qr-modal-body {
+    text-align: center;
+}
+
+.qr-code-container {
+    margin-bottom: 20px;
+}
+
+.qr-code-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.qr-info {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.qr-info p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.qr-info a {
+    color: #ffd700;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.qr-info a:hover {
+    text-decoration: underline;
+}
+
+.qr-instructions {
+    color: white;
+    font-size: 14px;
+}
+
+.qr-instructions p {
+    margin: 5px 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+} 
