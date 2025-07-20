@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音效和角色测试</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .character {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .character:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+        .character.selected {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .character i {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .character span {
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .sound-test {
+            margin: 10px 0;
+        }
+        .sound-btn {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .sound-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 游戏功能测试</h1>
+    
+    <div class="test-section">
+        <h2>🎭 角色选择测试</h2>
+        <p>点击角色查看名字是否正确显示：</p>
+        <div class="characters">
+            <div class="character" data-character="wizard">
+                <i class="fas fa-magic"></i>
+                <span>魔法师</span>
+            </div>
+            <div class="character" data-character="unicorn">
+                <i class="fas fa-star"></i>
+                <span>独角兽</span>
+            </div>
+            <div class="character" data-character="dragon">
+                <i class="fas fa-fire"></i>
+                <span>小龙</span>
+            </div>
+            <div class="character" data-character="butterfly">
+                <i class="fas fa-butterfly"></i>
+                <span>蝴蝶仙子</span>
+            </div>
+        </div>
+        <p id="selected-character">未选择角色</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔊 音效测试</h2>
+        <p>点击按钮测试音效：</p>
+        <div class="sound-test">
+            <button class="sound-btn" onclick="playSound('magic')">魔法师音效</button>
+            <button class="sound-btn" onclick="playSound('sparkle')">独角兽音效</button>
+            <button class="sound-btn" onclick="playSound('fire')">小龙音效</button>
+            <button class="sound-btn" onclick="playSound('flutter')">蝴蝶音效</button>
+        </div>
+        <p id="sound-status">点击任意按钮开始测试音效</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>📝 角色宣言测试</h2>
+        <p>选择角色后查看宣言：</p>
+        <div id="declaration-display">未选择角色</div>
+    </div>
+
+    <script>
+        let audioContext = null;
+        
+        // 初始化音频上下文
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('音频上下文已创建');
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+        
+        // 角色选择
+        document.querySelectorAll('.character').forEach(char => {
+            char.addEventListener('click', function() {
+                // 移除其他选中状态
+                document.querySelectorAll('.character').forEach(c => c.classList.remove('selected'));
+                // 添加选中状态
+                this.classList.add('selected');
+                
+                const character = this.dataset.character;
+                const characterName = this.querySelector('span').textContent;
+                
+                document.getElementById('selected-character').textContent = `当前选择: ${characterName} (${character})`;
+                
+                // 显示宣言
+                showDeclaration(character);
+                
+                // 播放音效
+                playCharacterSound(character);
+            });
+        });
+        
+        // 显示角色宣言
+        function showDeclaration(character) {
+            const declarations = {
+                'wizard': "🧙‍♂️ 魔法师宣言：知识就是力量，让我用智慧征服数学王国！",
+                'unicorn': "🦄 独角兽宣言：彩虹般的梦想，让我用魔法点亮数学之路！",
+                'dragon': "🐲 小龙宣言：火焰般的热情，让我用勇气燃烧数学挑战！",
+                'butterfly': "🦋 蝴蝶仙子宣言：轻盈的舞步，让我用优雅征服数学花园！"
+            };
+            
+            const declaration = declarations[character] || "未知角色";
+            document.getElementById('declaration-display').textContent = declaration;
+        }
+        
+        // 播放角色音效
+        function playCharacterSound(soundType) {
+            try {
+                initAudioContext();
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                const now = audioContext.currentTime;
+                
+                switch(soundType) {
+                    case 'magic':
+                        oscillator.frequency.setValueAtTime(800, now);
+                        oscillator.frequency.setValueAtTime(1000, now + 0.2);
+                        oscillator.frequency.setValueAtTime(1200, now + 0.4);
+                        break;
+                    case 'sparkle':
+                        oscillator.frequency.setValueAtTime(1200, now);
+                        oscillator.frequency.setValueAtTime(1400, now + 0.1);
+                        oscillator.frequency.setValueAtTime(1600, now + 0.2);
+                        break;
+                    case 'fire':
+                        oscillator.frequency.setValueAtTime(200, now);
+                        oscillator.frequency.setValueAtTime(300, now + 0.1);
+                        oscillator.frequency.setValueAtTime(400, now + 0.2);
+                        break;
+                    case 'flutter':
+                        oscillator.frequency.setValueAtTime(600, now);
+                        oscillator.frequency.setValueAtTime(800, now + 0.1);
+                        oscillator.frequency.setValueAtTime(1000, now + 0.2);
+                        break;
+                }
+                
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                
+                oscillator.start(now);
+                oscillator.stop(now + 0.5);
+                
+                document.getElementById('sound-status').textContent = `✅ 播放${soundType}音效成功`;
+                console.log(`播放${soundType}音效`);
+            } catch (error) {
+                document.getElementById('sound-status').textContent = `❌ 音效播放失败: ${error.message}`;
+                console.error('音效播放失败:', error);
+            }
+        }
+        
+        // 直接音效测试
+        function playSound(soundType) {
+            playCharacterSound(soundType);
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('测试页面已加载');
+            // 点击页面任意位置启动音频上下文
+            document.addEventListener('click', function() {
+                initAudioContext();
+            }, { once: true });
+        });
+    </script>
+</body>
+</html> 

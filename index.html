@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 超级数学小英雄 - 乘法口诀PK赛</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="clouds"></div>
+    
+    <div class="container">
+        <header>
+            <div class="title-area">
+                <h1>🎪 舒彦爸爸爸的教室（乘法王国）</h1>
+                <h2>🌟 乘法口诀大冒险 🌟</h2>
+                <p>和小伙伴们一起挑战，成为数学小天才！</p>
+            </div>
+            <div class="player-setup">
+                <div class="name-input-section">
+                    <h3>🎯 输入你的名字：</h3>
+                    <div class="name-input-container">
+                        <input type="text" id="player-name-input" placeholder="输入你的名字" maxlength="10">
+                        <div class="name-validation" id="name-validation" style="display: none;">
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-selector">
+                    <h3>🎭 选择你的魔法伙伴：</h3>
+                    <div class="characters">
+                                            <div class="character" data-character="nezha">
+                        <i class="fas fa-fire"></i>
+                        <span>哪吒</span>
+                    </div>
+                    <div class="character" data-character="aobing">
+                        <i class="fas fa-water"></i>
+                        <span>敖丙</span>
+                    </div>
+                    <div class="character" data-character="taiyi">
+                        <i class="fas fa-magic"></i>
+                        <span>太乙真人</span>
+                    </div>
+                    <div class="character" data-character="shengongbao">
+                        <i class="fas fa-mask"></i>
+                        <span>申公豹</span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-area">
+            <!-- 开始界面 -->
+            <div id="start-screen" class="screen active">
+                <div class="game-modes">
+                    <h2>🎮 选择游戏模式</h2>
+                    <div class="mode-buttons">
+                        <button class="mode-btn single-player" data-mode="single">
+                            <i class="fas fa-user"></i>
+                            <span>单人练习</span>
+                        </button>
+                        <button class="mode-btn multi-player" data-mode="multi">
+                            <i class="fas fa-users"></i>
+                            <span>多人PK赛</span>
+                        </button>
+                        <button class="mode-btn tournament" onclick="window.location.href='multiplayer.html'">
+                            <i class="fas fa-trophy"></i>
+                            <span>多人比赛</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="difficulty-section" id="difficulty-section" style="display: none;">
+                    <h3>⚡ 选择挑战难度</h3>
+                    <div class="difficulty-buttons">
+                        <button class="difficulty-btn" data-difficulty="beginner">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>乘法口诀基础 (1-5)</span>
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="easy">
+                            <i class="fas fa-medal"></i>
+                            <span>乘法口诀进阶 (1-9)</span>
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="medium">
+                            <i class="fas fa-star"></i>
+                            <span>乘法口诀熟练 (含两位数)</span>
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="hard">
+                            <i class="fas fa-crown"></i>
+                            <span>乘法进阶 (两位数乘法)</span>
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="expert">
+                            <i class="fas fa-fire"></i>
+                            <span>乘法高级 (两位数乘两位数)</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="online-players" id="online-players" style="display: none;">
+                    <h3>👥 多人挑战</h3>
+                    <div class="qr-section">
+                        <div class="qr-code">
+                            <i class="fab fa-weixin"></i>
+                            <span>扫码加入</span>
+                        </div>
+                        <p>扫描二维码邀请小伙伴一起挑战！</p>
+                    </div>
+                    <div class="players-progress">
+                        <h4>🏆 实时进度</h4>
+                        <div class="players-list">
+                            <div class="player-progress-item">
+                                <div class="player-info">
+                                    <i class="fas fa-bolt"></i>
+                                    <span class="player-name">小明</span>
+                                    <span class="player-level">Lv.3</span>
+                                </div>
+                                <div class="progress-bar-mini">
+                                    <div class="progress-fill-mini" style="width: 60%"></div>
+                                </div>
+                                <span class="progress-text">6/10</span>
+                            </div>
+                            <div class="player-progress-item">
+                                <div class="player-info">
+                                    <i class="fas fa-spider"></i>
+                                    <span class="player-name">小红</span>
+                                    <span class="player-level">Lv.2</span>
+                                </div>
+                                <div class="progress-bar-mini">
+                                    <div class="progress-fill-mini" style="width: 40%"></div>
+                                </div>
+                                <span class="progress-text">4/10</span>
+                            </div>
+                            <div class="player-progress-item">
+                                <div class="player-info">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span class="player-name">小华</span>
+                                    <span class="player-level">Lv.4</span>
+                                </div>
+                                <div class="progress-bar-mini">
+                                    <div class="progress-fill-mini" style="width: 80%"></div>
+                                </div>
+                                <span class="progress-text">8/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h3>📖 游戏说明：</h3>
+                    <ul>
+                        <li><i class="fas fa-magic"></i> 选择你的小英雄角色</li>
+                        <li><i class="fas fa-gamepad"></i> 选择游戏模式和难度</li>
+                        <li><i class="fas fa-keyboard"></i> 输入正确答案会自动提交</li>
+                        <li><i class="fas fa-trophy"></i> 答对+10分，答错-5分</li>
+                        <li><i class="fas fa-users"></i> 和小伙伴们一起PK！</li>
+                        <li><i class="fas fa-crown"></i> 挑战成为数学小天才！</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 游戏界面 -->
+            <div id="game-screen" class="screen">
+                <div class="game-header">
+                    <div class="player-info">
+                        <div class="player-avatar">
+                            <i id="player-character" class="fas fa-robot"></i>
+                            <div class="level-badge" id="level-badge">Lv.1</div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-name" id="player-name">数学小英雄</div>
+                            <div class="player-level-display" id="player-level-display">坚韧黑铁</div>
+                            <div class="score">得分: <span id="score">0</span></div>
+                            <div class="timer">时间: <span id="timer">60</span>秒</div>
+                            <div class="player-lives" id="player-lives">
+                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <span id="question-counter">0/10</span>
+                    </div>
+                </div>
+
+                <div class="question-area">
+                    <!-- 连击气泡 -->
+                    <div class="combo-bubble" id="combo-bubble" style="display: none;">
+                        <div class="combo-content">
+                            <i class="fas fa-fire"></i>
+                            <span id="combo-text">连续答对 2 题！</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-bubble">
+                        <div class="question">
+                            <span id="num1">?</span> <span id="operator">×</span> <span id="num2">?</span> = ?
+                        </div>
+                        <div class="hint-section">
+                            <button id="hint-btn" class="hint-btn">
+                                <i class="fas fa-lightbulb"></i>
+                                提示 (<span id="hint-count">3</span>)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="answer-input">
+                        <input type="number" id="answer-input" placeholder="输入答案，正确会自动提交！" autocomplete="off">
+                        <div class="input-effects">
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+                
+                <div class="action-buttons" id="action-buttons" style="display: none;">
+                    <button id="skip-btn" class="skip-btn">
+                        <i class="fas fa-forward"></i>
+                        跳过这题
+                    </button>
+                    <button id="try-again-btn" class="try-again-btn">
+                        <i class="fas fa-redo"></i>
+                        再试一次
+                    </button>
+                </div>
+
+                <div class="online-competitors" id="online-competitors">
+                    <h4>🏆 实时排行榜</h4>
+                    <div class="competitors-list">
+                        <div class="competitor">
+                            <i class="fas fa-bolt"></i>
+                            <span>皮卡丘</span>
+                            <span class="competitor-score">85分</span>
+                        </div>
+                        <div class="competitor">
+                            <i class="fas fa-spider"></i>
+                            <span>蜘蛛侠</span>
+                            <span class="competitor-score">72分</span>
+                        </div>
+                        <div class="competitor">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>超人</span>
+                            <span class="competitor-score">68分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button id="pause-btn"><i class="fas fa-pause"></i> 暂停</button>
+                    <button id="restart-btn"><i class="fas fa-redo"></i> 重新开始</button>
+                </div>
+            </div>
+
+            <!-- 结束界面 -->
+            <div id="end-screen" class="screen">
+                <div class="celebration">
+                    <div class="trophy">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h2>🎉 挑战完成！</h2>
+                    <div class="achievement-message" id="achievement-message">
+                        恭喜你完成了挑战！
+                    </div>
+                </div>
+                
+                <div class="final-stats">
+                    <div class="stat">
+                        <span class="label"><i class="fas fa-star"></i> 本局得分:</span>
+                        <span id="final-score">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label"><i class="fas fa-trophy"></i> 累积总分:</span>
+                        <span id="total-score">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label"><i class="fas fa-check-circle"></i> 正确题目:</span>
+                        <span id="correct-answers">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label"><i class="fas fa-times-circle"></i> 错误题目:</span>
+                        <span id="wrong-answers">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label"><i class="fas fa-gamepad"></i> 游戏次数:</span>
+                        <span id="games-played">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label"><i class="fas fa-crown"></i> 最高分:</span>
+                        <span id="high-score">0</span>
+                    </div>
+                </div>
+                
+                <div class="ranking-section">
+                    <h3>🏆 本次排名</h3>
+                    <div class="ranking-tabs">
+                        <button class="ranking-tab active" data-category="all">全部</button>
+                        <button class="ranking-tab" data-category="nezha">哪吒</button>
+                        <button class="ranking-tab" data-category="aobing">敖丙</button>
+                        <button class="ranking-tab" data-category="taiyi">太乙真人</button>
+                        <button class="ranking-tab" data-category="shengongbao">申公豹</button>
+                    </div>
+                    <div class="ranking-list" id="ranking-list">
+                        <div class="ranking-item">
+                            <span class="rank">1</span>
+                            <i class="fas fa-magic"></i>
+                            <span>小明</span>
+                            <span class="score">95分</span>
+                        </div>
+                        <div class="ranking-item current-player">
+                            <span class="rank">2</span>
+                            <i id="final-player-character" class="fas fa-magic"></i>
+                            <span id="final-player-name">你</span>
+                            <span class="score" id="final-player-score">0分</span>
+                        </div>
+                        <div class="ranking-item">
+                            <span class="rank">3</span>
+                            <i class="fas fa-star"></i>
+                            <span>小红</span>
+                            <span class="score">72分</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="end-buttons">
+                    <button id="play-again-btn"><i class="fas fa-play"></i> 再玩一次</button>
+                    <button id="next-difficulty-btn"><i class="fas fa-arrow-up"></i> 下一难度</button>
+                    <button id="back-to-menu-btn"><i class="fas fa-home"></i> 返回菜单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

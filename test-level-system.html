@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>等级系统测试</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .test-section {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background: white;
+        }
+        .test-button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .level-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .difficulty-test {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .question-display {
+            font-size: 2rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 英雄联盟等级系统测试</h1>
+        
+        <div class="test-section">
+            <h2>1. 等级系统测试</h2>
+            <p>测试英雄联盟风格的等级系统</p>
+            <div class="level-display" id="current-level">当前等级: 坚韧黑铁 Lv.1</div>
+            <div class="level-display" id="current-exp">当前经验: 0</div>
+            <button class="test-button" onclick="addExperience(50)">+50 经验</button>
+            <button class="test-button" onclick="addExperience(100)">+100 经验</button>
+            <button class="test-button" onclick="addExperience(200)">+200 经验</button>
+            <button class="test-button" onclick="resetLevel()">重置等级</button>
+            <div id="level-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. 难度选择测试</h2>
+            <p>测试不同难度下的题目生成</p>
+            <div class="difficulty-test">
+                <button class="difficulty-btn" data-difficulty="beginner" onclick="testDifficulty('beginner')">
+                    <i class="fas fa-shield-alt"></i>
+                    新手村
+                </button>
+                <button class="difficulty-btn" data-difficulty="easy" onclick="testDifficulty('easy')">
+                    <i class="fas fa-medal"></i>
+                    简单模式
+                </button>
+                <button class="difficulty-btn" data-difficulty="medium" onclick="testDifficulty('medium')">
+                    <i class="fas fa-star"></i>
+                    中等模式
+                </button>
+                <button class="difficulty-btn" data-difficulty="hard" onclick="testDifficulty('hard')">
+                    <i class="fas fa-crown"></i>
+                    困难模式
+                </button>
+                <button class="difficulty-btn" data-difficulty="expert" onclick="testDifficulty('expert')">
+                    <i class="fas fa-fire"></i>
+                    专家模式
+                </button>
+            </div>
+            <div class="question-display" id="question-display">选择难度生成题目</div>
+            <div id="difficulty-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. 累积分数测试</h2>
+            <p>测试分数累积功能</p>
+            <div class="level-display" id="total-score">累积总分: 0</div>
+            <div class="level-display" id="games-played">游戏次数: 0</div>
+            <button class="test-button" onclick="simulateGame(50)">模拟游戏 (50分)</button>
+            <button class="test-button" onclick="simulateGame(80)">模拟游戏 (80分)</button>
+            <button class="test-button" onclick="simulateGame(100)">模拟游戏 (100分)</button>
+            <button class="test-button" onclick="resetScore()">重置分数</button>
+            <div id="score-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. 完整游戏测试</h2>
+            <p>打开完整游戏页面进行测试</p>
+            <button class="test-button" onclick="openMainGame()">打开主游戏</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟等级系统
+        let currentExp = 0;
+        let currentLevel = 1;
+        let currentTitle = '坚韧黑铁';
+        let currentIcon = 'fas fa-shield-alt';
+        let currentColor = '#2c2c2c';
+        let totalScore = 0;
+        let gamesPlayed = 0;
+        
+        const levels = [
+            { level: 1, exp: 0, title: "坚韧黑铁", icon: "fas fa-shield-alt", color: "#2c2c2c" },
+            { level: 2, exp: 100, title: "英勇黄铜", icon: "fas fa-medal", color: "#cd7f32" },
+            { level: 3, exp: 300, title: "不屈白银", icon: "fas fa-star", color: "#c0c0c0" },
+            { level: 4, exp: 600, title: "荣耀黄金", icon: "fas fa-crown", color: "#ffd700" },
+            { level: 5, exp: 1000, title: "华贵铂金", icon: "fas fa-gem", color: "#e5e4e2" },
+            { level: 6, exp: 1500, title: "璀璨钻石", icon: "fas fa-diamond", color: "#b9f2ff" },
+            { level: 7, exp: 2100, title: "超凡大师", icon: "fas fa-trophy", color: "#ff6b6b" },
+            { level: 8, exp: 2800, title: "傲世宗师", icon: "fas fa-crown", color: "#ff4757" },
+            { level: 9, exp: 3600, title: "最强王者", icon: "fas fa-fire", color: "#ff3838" }
+        ];
+        
+        function calculateLevel() {
+            for (let i = levels.length - 1; i >= 0; i--) {
+                if (currentExp >= levels[i].exp) {
+                    currentLevel = levels[i].level;
+                    currentTitle = levels[i].title;
+                    currentIcon = levels[i].icon;
+                    currentColor = levels[i].color;
+                    return currentLevel;
+                }
+            }
+            return 1;
+        }
+        
+        function addExperience(exp) {
+            const oldLevel = currentLevel;
+            currentExp += exp;
+            const newLevel = calculateLevel();
+            
+            updateLevelDisplay();
+            
+            const result = document.getElementById('level-test-result');
+            if (newLevel > oldLevel) {
+                result.innerHTML = `🎉 升级了！从 ${levels[oldLevel-1].title} 升级到 ${currentTitle}`;
+                result.style.color = 'green';
+            } else {
+                result.innerHTML = `✅ 获得 ${exp} 经验值`;
+                result.style.color = 'blue';
+            }
+        }
+        
+        function updateLevelDisplay() {
+            const levelDisplay = document.getElementById('current-level');
+            const expDisplay = document.getElementById('current-exp');
+            
+            levelDisplay.innerHTML = `<i class="${currentIcon}"></i> ${currentTitle} Lv.${currentLevel}`;
+            levelDisplay.style.color = currentColor;
+            expDisplay.textContent = `当前经验: ${currentExp}`;
+        }
+        
+        function resetLevel() {
+            currentExp = 0;
+            currentLevel = 1;
+            currentTitle = '坚韧黑铁';
+            currentIcon = 'fas fa-shield-alt';
+            currentColor = '#2c2c2c';
+            updateLevelDisplay();
+            
+            const result = document.getElementById('level-test-result');
+            result.innerHTML = '🔄 等级已重置';
+            result.style.color = 'orange';
+        }
+        
+        function testDifficulty(difficulty) {
+            // 更新按钮状态
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 生成题目
+            let question, answer;
+            const questionDisplay = document.getElementById('question-display');
+            const result = document.getElementById('difficulty-test-result');
+            
+            switch(difficulty) {
+                case 'beginner':
+                    const num1 = Math.floor(Math.random() * 5) + 1;
+                    const num2 = Math.floor(Math.random() * 5) + 1;
+                    question = `${num1} × ${num2}`;
+                    answer = num1 * num2;
+                    break;
+                case 'easy':
+                    const num3 = Math.floor(Math.random() * 9) + 1;
+                    const num4 = Math.floor(Math.random() * 9) + 1;
+                    question = `${num3} × ${num4}`;
+                    answer = num3 * num4;
+                    break;
+                case 'medium':
+                    const operations = ['+', '-', '×'];
+                    const operator = operations[Math.floor(Math.random() * operations.length)];
+                    const num5 = Math.floor(Math.random() * 12) + 1;
+                    const num6 = Math.floor(Math.random() * 12) + 1;
+                    
+                    if (operator === '×') {
+                        question = `${num5} × ${num6}`;
+                        answer = num5 * num6;
+                    } else if (operator === '+') {
+                        question = `${num5} + ${num6}`;
+                        answer = num5 + num6;
+                    } else {
+                        const larger = Math.max(num5, num6);
+                        const smaller = Math.min(num5, num6);
+                        question = `${larger} - ${smaller}`;
+                        answer = larger - smaller;
+                    }
+                    break;
+                case 'hard':
+                    const operations2 = ['+', '-', '×'];
+                    const operator2 = operations2[Math.floor(Math.random() * operations2.length)];
+                    const num7 = Math.floor(Math.random() * 15) + 1;
+                    const num8 = Math.floor(Math.random() * 15) + 1;
+                    
+                    if (operator2 === '×') {
+                        question = `${num7} × ${num8}`;
+                        answer = num7 * num8;
+                    } else if (operator2 === '+') {
+                        question = `${num7} + ${num8}`;
+                        answer = num7 + num8;
+                    } else {
+                        const larger2 = Math.max(num7, num8);
+                        const smaller2 = Math.min(num7, num8);
+                        question = `${larger2} - ${smaller2}`;
+                        answer = larger2 - smaller2;
+                    }
+                    break;
+                case 'expert':
+                    const operations3 = ['+', '-', '×', '÷'];
+                    const operator3 = operations3[Math.floor(Math.random() * operations3.length)];
+                    
+                    if (operator3 === '÷') {
+                        const divisor = Math.floor(Math.random() * 10) + 1;
+                        const quotient = Math.floor(Math.random() * 10) + 1;
+                        const dividend = divisor * quotient;
+                        question = `${dividend} ÷ ${divisor}`;
+                        answer = quotient;
+                    } else {
+                        const num9 = Math.floor(Math.random() * 20) + 1;
+                        const num10 = Math.floor(Math.random() * 20) + 1;
+                        
+                        if (operator3 === '×') {
+                            question = `${num9} × ${num10}`;
+                            answer = num9 * num10;
+                        } else if (operator3 === '+') {
+                            question = `${num9} + ${num10}`;
+                            answer = num9 + num10;
+                        } else {
+                            const larger3 = Math.max(num9, num10);
+                            const smaller3 = Math.min(num9, num10);
+                            question = `${larger3} - ${smaller3}`;
+                            answer = larger3 - smaller3;
+                        }
+                    }
+                    break;
+            }
+            
+            questionDisplay.innerHTML = `${question} = ?<br><small>答案: ${answer}</small>`;
+            
+            result.innerHTML = `✅ 难度: ${difficulty}<br>题目类型: ${getDifficultyDescription(difficulty)}`;
+            result.style.color = 'green';
+        }
+        
+        function getDifficultyDescription(difficulty) {
+            const descriptions = {
+                'beginner': '新手村 (1-5乘法)',
+                'easy': '简单模式 (1-9乘法)',
+                'medium': '中等模式 (混合运算)',
+                'hard': '困难模式 (高级运算)',
+                'expert': '专家模式 (四则运算)'
+            };
+            return descriptions[difficulty] || '未知难度';
+        }
+        
+        function simulateGame(score) {
+            totalScore += score;
+            gamesPlayed++;
+            
+            document.getElementById('total-score').textContent = `累积总分: ${totalScore}`;
+            document.getElementById('games-played').textContent = `游戏次数: ${gamesPlayed}`;
+            
+            const result = document.getElementById('score-test-result');
+            result.innerHTML = `🎮 模拟游戏完成！本局得分: ${score}，累积总分: ${totalScore}`;
+            result.style.color = 'green';
+        }
+        
+        function resetScore() {
+            totalScore = 0;
+            gamesPlayed = 0;
+            
+            document.getElementById('total-score').textContent = `累积总分: ${totalScore}`;
+            document.getElementById('games-played').textContent = `游戏次数: ${gamesPlayed}`;
+            
+            const result = document.getElementById('score-test-result');
+            result.innerHTML = '🔄 分数已重置';
+            result.style.color = 'orange';
+        }
+        
+        function openMainGame() {
+            window.open('index.html', '_blank');
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLevelDisplay();
+        });
+    </script>
+</body>
+</html> 

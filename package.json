@@ -1,0 +1,26 @@
+{
+  "name": "shuyan-dad-classroom",
+  "version": "1.0.0",
+  "description": "舒彦爸爸爸的教室（乘法王国） - 儿童数学游戏",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo '静态网站，直接打开index.html即可'",
+    "build": "echo '静态文件无需构建'",
+    "deploy": "echo '使用Vercel自动部署'"
+  },
+  "keywords": [
+    "math",
+    "game",
+    "education",
+    "multiplication",
+    "children",
+    "static"
+  ],
+  "author": "舒彦爸爸爸",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tmxccc/shuyanbaba.git"
+  },
+  "homepage": "https://shuyanbaba.vercel.app"
+} 

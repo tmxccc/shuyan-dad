@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试页面</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .character {
+            display: inline-block;
+            padding: 15px;
+            margin: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .character:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+        .character.selected {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .character i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .character span {
+            font-size: 1rem;
+            color: #333;
+            display: block;
+        }
+        .test-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 调试页面</h1>
+    
+    <div class="debug-section">
+        <h2>🎭 角色选择测试</h2>
+        <p>点击角色查看控制台输出：</p>
+        <div class="characters">
+            <div class="character" data-character="wizard">
+                <i class="fas fa-magic"></i>
+                <span>魔法师</span>
+            </div>
+            <div class="character" data-character="unicorn">
+                <i class="fas fa-star"></i>
+                <span>独角兽</span>
+            </div>
+            <div class="character" data-character="dragon">
+                <i class="fas fa-fire"></i>
+                <span>小龙</span>
+            </div>
+            <div class="character" data-character="butterfly">
+                <i class="fas fa-butterfly"></i>
+                <span>蝴蝶仙子</span>
+            </div>
+        </div>
+        <div class="log" id="character-log">等待选择角色...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🔊 音效测试</h2>
+        <p>点击按钮测试音效：</p>
+        <button class="test-btn" onclick="testSound('magic')">魔法师音效</button>
+        <button class="test-btn" onclick="testSound('sparkle')">独角兽音效</button>
+        <button class="test-btn" onclick="testSound('fire')">小龙音效</button>
+        <button class="test-btn" onclick="testSound('flutter')">蝴蝶音效</button>
+        <div class="log" id="sound-log">等待测试音效...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📝 控制台日志</h2>
+        <p>打开浏览器控制台 (F12) 查看详细日志</p>
+        <button class="test-btn" onclick="clearLogs()">清除日志</button>
+    </div>
+
+    <script>
+        let audioContext = null;
+        
+        // 初始化音频上下文
+        function initAudioContext() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    console.log('✅ 音频上下文已创建');
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                        console.log('✅ 音频上下文已恢复');
+                    }
+                } catch (error) {
+                    console.error('❌ 音频上下文创建失败:', error);
+                }
+            }
+        }
+        
+        // 角色选择测试
+        document.querySelectorAll('.character').forEach(char => {
+            char.addEventListener('click', function() {
+                // 移除其他选中状态
+                document.querySelectorAll('.character').forEach(c => c.classList.remove('selected'));
+                // 添加选中状态
+                this.classList.add('selected');
+                
+                const character = this.dataset.character;
+                const characterName = this.querySelector('span').textContent;
+                
+                console.log('🎭 选中角色:', character, characterName);
+                document.getElementById('character-log').textContent = `选中: ${characterName} (${character})`;
+                
+                // 播放音效
+                playCharacterSound(character);
+            });
+        });
+        
+        // 播放角色语音
+        function playCharacterSound(soundType) {
+            try {
+                // 使用语音合成API让角色"说话"
+                if ('speechSynthesis' in window) {
+                    const messages = {
+                        'magic': {
+                            text: "知识就是力量，让我用智慧征服数学王国！",
+                            voice: 'zh-CN-XiaoxiaoNeural'
+                        },
+                        'sparkle': {
+                            text: "彩虹般的梦想，让我用魔法点亮数学之路！",
+                            voice: 'zh-CN-XiaoyiNeural'
+                        },
+                        'fire': {
+                            text: "火焰般的热情，让我用勇气燃烧数学挑战！",
+                            voice: 'zh-CN-YunxiNeural'
+                        },
+                        'flutter': {
+                            text: "轻盈的舞步，让我用优雅征服数学花园！",
+                            voice: 'zh-CN-XiaoxiaoNeural'
+                        }
+                    };
+                    
+                    const message = messages[soundType];
+                    if (message) {
+                        // 停止之前的语音
+                        speechSynthesis.cancel();
+                        
+                        const utterance = new SpeechSynthesisUtterance(message.text);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.9;
+                        utterance.pitch = 1.1;
+                        utterance.volume = 0.8;
+                        
+                        // 尝试设置语音
+                        const voices = speechSynthesis.getVoices();
+                        const preferredVoice = voices.find(voice => 
+                            voice.name.includes('Xiaoxiao') || 
+                            voice.name.includes('Xiaoyi') || 
+                            voice.name.includes('Yunxi')
+                        );
+                        
+                        if (preferredVoice) {
+                            utterance.voice = preferredVoice;
+                        }
+                        
+                        utterance.onstart = () => {
+                            console.log(`🎤 ${soundType}角色开始说话`);
+                            document.getElementById('sound-log').textContent = `🎤 ${soundType}角色开始说话`;
+                        };
+                        
+                        utterance.onend = () => {
+                            console.log(`✅ ${soundType}角色说话完成`);
+                            document.getElementById('sound-log').textContent = `✅ ${soundType}角色说话完成`;
+                        };
+                        
+                        utterance.onerror = (event) => {
+                            console.error(`❌ 语音播放失败:`, event.error);
+                            document.getElementById('sound-log').textContent = `❌ 语音播放失败: ${event.error}`;
+                            // 如果语音失败，播放备用音效
+                            playBackupSound(soundType);
+                        };
+                        
+                        speechSynthesis.speak(utterance);
+                    }
+                } else {
+                    // 如果不支持语音合成，播放备用音效
+                    playBackupSound(soundType);
+                }
+            } catch (error) {
+                console.error('❌ 语音播放失败:', error);
+                document.getElementById('sound-log').textContent = `❌ 语音播放失败: ${error.message}`;
+                // 播放备用音效
+                playBackupSound(soundType);
+            }
+        }
+        
+        // 播放备用音效
+        function playBackupSound(soundType) {
+            try {
+                initAudioContext();
+                
+                if (!audioContext) {
+                    throw new Error('音频上下文未创建');
+                }
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                const now = audioContext.currentTime;
+                
+                switch(soundType) {
+                    case 'magic':
+                        oscillator.frequency.setValueAtTime(800, now);
+                        oscillator.frequency.setValueAtTime(1000, now + 0.2);
+                        oscillator.frequency.setValueAtTime(1200, now + 0.4);
+                        break;
+                    case 'sparkle':
+                        oscillator.frequency.setValueAtTime(1200, now);
+                        oscillator.frequency.setValueAtTime(1400, now + 0.1);
+                        oscillator.frequency.setValueAtTime(1600, now + 0.2);
+                        break;
+                    case 'fire':
+                        oscillator.frequency.setValueAtTime(200, now);
+                        oscillator.frequency.setValueAtTime(300, now + 0.1);
+                        oscillator.frequency.setValueAtTime(400, now + 0.2);
+                        break;
+                    case 'flutter':
+                        oscillator.frequency.setValueAtTime(600, now);
+                        oscillator.frequency.setValueAtTime(800, now + 0.1);
+                        oscillator.frequency.setValueAtTime(1000, now + 0.2);
+                        break;
+                }
+                
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                
+                oscillator.start(now);
+                oscillator.stop(now + 0.5);
+                
+                console.log(`🔊 播放${soundType}备用音效`);
+                document.getElementById('sound-log').textContent = `🔊 播放${soundType}备用音效`;
+            } catch (error) {
+                console.error('❌ 备用音效播放失败:', error);
+                document.getElementById('sound-log').textContent = `❌ 备用音效播放失败: ${error.message}`;
+            }
+        }
+        
+        // 直接音效测试
+        function testSound(soundType) {
+            console.log(`🔊 测试${soundType}音效`);
+            playCharacterSound(soundType);
+        }
+        
+        // 清除日志
+        function clearLogs() {
+            document.getElementById('character-log').textContent = '等待选择角色...';
+            document.getElementById('sound-log').textContent = '等待测试音效...';
+            console.clear();
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 调试页面已加载');
+            console.log('💡 提示: 点击页面任意位置启动音频上下文');
+            
+            // 点击页面任意位置启动音频上下文
+            document.addEventListener('click', function() {
+                initAudioContext();
+            }, { once: true });
+        });
+    </script>
+</body>
+</html> 

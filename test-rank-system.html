@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>段位系统测试</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .test-section {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background: white;
+        }
+        .test-button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .rank-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .difficulty-test {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .rank-table th, .rank-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .rank-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .current-rank {
+            background-color: #e6f3ff !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 段位系统测试</h1>
+        
+        <div class="test-section">
+            <h2>1. 当前状态</h2>
+            <div class="rank-display" id="current-rank">当前段位: 坚韧黑铁</div>
+            <div class="rank-display" id="current-score">累积总分: 0</div>
+            <div class="rank-display" id="current-difficulty">当前难度: 新手村</div>
+            <div class="rank-display" id="next-rank">下一段位要求: 英勇黄铜 (100分)</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. 难度选择</h2>
+            <p>选择不同难度，段位要求会不同</p>
+            <div class="difficulty-test">
+                <button class="difficulty-btn" data-difficulty="beginner" onclick="selectDifficulty('beginner')">
+                    <i class="fas fa-shield-alt"></i>
+                    乘法口诀基础
+                </button>
+                <button class="difficulty-btn" data-difficulty="easy" onclick="selectDifficulty('easy')">
+                    <i class="fas fa-medal"></i>
+                    乘法口诀进阶
+                </button>
+                <button class="difficulty-btn" data-difficulty="medium" onclick="selectDifficulty('medium')">
+                    <i class="fas fa-star"></i>
+                    乘法口诀熟练
+                </button>
+                <button class="difficulty-btn" data-difficulty="hard" onclick="selectDifficulty('hard')">
+                    <i class="fas fa-crown"></i>
+                    乘法进阶
+                </button>
+                <button class="difficulty-btn" data-difficulty="expert" onclick="selectDifficulty('expert')">
+                    <i class="fas fa-fire"></i>
+                    乘法高级
+                </button>
+            </div>
+            <div id="difficulty-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. 分数测试</h2>
+            <p>模拟游戏获得分数，测试段位升级</p>
+            <button class="test-button" onclick="addScore(50)">+50 分</button>
+            <button class="test-button" onclick="addScore(100)">+100 分</button>
+            <button class="test-button" onclick="addScore(200)">+200 分</button>
+            <button class="test-button" onclick="addScore(500)">+500 分</button>
+            <button class="test-button" onclick="resetScore()">重置分数</button>
+            <div id="score-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. 段位要求表</h2>
+            <p>不同难度下的段位升级要求</p>
+            <table class="rank-table" id="rank-table">
+                <thead>
+                    <tr>
+                        <th>段位</th>
+                        <th>乘法口诀基础</th>
+                        <th>乘法口诀进阶</th>
+                        <th>乘法口诀熟练</th>
+                        <th>乘法进阶</th>
+                        <th>乘法高级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 动态生成 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. 完整游戏测试</h2>
+            <p>打开完整游戏页面进行测试</p>
+            <button class="test-button" onclick="openMainGame()">打开主游戏</button>
+        </div>
+    </div>
+
+    <script>
+        // 段位系统
+        let currentScore = 0;
+        let currentDifficulty = 'beginner';
+        let currentRank = 1;
+        let currentTitle = '坚韧黑铁';
+        let currentIcon = 'fas fa-shield-alt';
+        let currentColor = '#2c2c2c';
+        
+        const ranks = [
+            { rank: 1, title: "坚韧黑铁", icon: "fas fa-shield-alt", color: "#2c2c2c", 
+              requirements: { beginner: 50, easy: 100, medium: 150, hard: 200, expert: 250 } },
+            { rank: 2, title: "英勇黄铜", icon: "fas fa-medal", color: "#cd7f32", 
+              requirements: { beginner: 150, easy: 300, medium: 450, hard: 600, expert: 750 } },
+            { rank: 3, title: "不屈白银", icon: "fas fa-star", color: "#c0c0c0", 
+              requirements: { beginner: 300, easy: 600, medium: 900, hard: 1200, expert: 1500 } },
+            { rank: 4, title: "荣耀黄金", icon: "fas fa-crown", color: "#ffd700", 
+              requirements: { beginner: 500, easy: 1000, medium: 1500, hard: 2000, expert: 2500 } },
+            { rank: 5, title: "华贵铂金", icon: "fas fa-gem", color: "#e5e4e2", 
+              requirements: { beginner: 750, easy: 1500, medium: 2250, hard: 3000, expert: 3750 } },
+            { rank: 6, title: "璀璨钻石", icon: "fas fa-diamond", color: "#b9f2ff", 
+              requirements: { beginner: 1200, easy: 2400, medium: 3600, hard: 4800, expert: 6000 } },
+            { rank: 7, title: "超凡大师", icon: "fas fa-trophy", color: "#ff6b6b", 
+              requirements: { beginner: 2000, easy: 4000, medium: 6000, hard: 8000, expert: 10000 } },
+            { rank: 8, title: "傲世宗师", icon: "fas fa-crown", color: "#ff4757", 
+              requirements: { beginner: 3000, easy: 6000, medium: 9000, hard: 12000, expert: 15000 } },
+            { rank: 9, title: "最强王者", icon: "fas fa-fire", color: "#ff3838", 
+              requirements: { beginner: 5000, easy: 10000, medium: 15000, hard: 20000, expert: 25000 } }
+        ];
+        
+        function calculateRank() {
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                const rank = ranks[i];
+                const requirement = rank.requirements[currentDifficulty];
+                
+                if (currentScore >= requirement) {
+                    currentRank = rank.rank;
+                    currentTitle = rank.title;
+                    currentIcon = rank.icon;
+                    currentColor = rank.color;
+                    return currentRank;
+                }
+            }
+            
+            currentRank = 1;
+            currentTitle = "坚韧黑铁";
+            currentIcon = "fas fa-shield-alt";
+            currentColor = "#2c2c2c";
+            return currentRank;
+        }
+        
+        function updateDisplay() {
+            const rankDisplay = document.getElementById('current-rank');
+            const scoreDisplay = document.getElementById('current-score');
+            const difficultyDisplay = document.getElementById('current-difficulty');
+            const nextRankDisplay = document.getElementById('next-rank');
+            
+            rankDisplay.innerHTML = `<i class="${currentIcon}"></i> ${currentTitle}`;
+            rankDisplay.style.color = currentColor;
+            scoreDisplay.textContent = `累积总分: ${currentScore}`;
+            
+            const difficultyNames = {
+                'beginner': '新手村',
+                'easy': '简单模式',
+                'medium': '中等模式',
+                'hard': '困难模式',
+                'expert': '专家模式'
+            };
+            difficultyDisplay.textContent = `当前难度: ${difficultyNames[currentDifficulty]}`;
+            
+            // 计算下一段位要求
+            const nextRank = ranks.find(r => r.rank === currentRank + 1);
+            if (nextRank) {
+                const requirement = nextRank.requirements[currentDifficulty];
+                nextRankDisplay.textContent = `下一段位要求: ${nextRank.title} (${requirement}分)`;
+            } else {
+                nextRankDisplay.textContent = '已达到最高段位！';
+            }
+            
+            updateRankTable();
+        }
+        
+        function selectDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const oldRank = currentRank;
+            calculateRank();
+            
+            updateDisplay();
+            
+            const result = document.getElementById('difficulty-test-result');
+            if (currentRank > oldRank) {
+                result.innerHTML = `🎉 段位提升！现在是 ${currentTitle}`;
+                result.style.color = 'green';
+            } else {
+                result.innerHTML = `✅ 切换到 ${difficultyNames[difficulty]}，当前段位: ${currentTitle}`;
+                result.style.color = 'blue';
+            }
+        }
+        
+        function addScore(score) {
+            const oldRank = currentRank;
+            currentScore += score;
+            calculateRank();
+            
+            updateDisplay();
+            
+            const result = document.getElementById('score-test-result');
+            if (currentRank > oldRank) {
+                result.innerHTML = `🎉 段位提升！从 ${ranks[oldRank-1].title} 升级到 ${currentTitle}`;
+                result.style.color = 'green';
+            } else {
+                result.innerHTML = `✅ 获得 ${score} 分，当前段位: ${currentTitle}`;
+                result.style.color = 'blue';
+            }
+        }
+        
+        function resetScore() {
+            currentScore = 0;
+            currentRank = 1;
+            currentTitle = '坚韧黑铁';
+            currentIcon = 'fas fa-shield-alt';
+            currentColor = '#2c2c2c';
+            
+            updateDisplay();
+            
+            const result = document.getElementById('score-test-result');
+            result.innerHTML = '🔄 分数已重置';
+            result.style.color = 'orange';
+        }
+        
+        function updateRankTable() {
+            const tbody = document.querySelector('#rank-table tbody');
+            tbody.innerHTML = '';
+            
+            ranks.forEach(rank => {
+                const row = document.createElement('tr');
+                if (rank.rank === currentRank) {
+                    row.className = 'current-rank';
+                }
+                
+                row.innerHTML = `
+                    <td><i class="${rank.icon}"></i> ${rank.title}</td>
+                    <td>${rank.requirements.beginner}</td>
+                    <td>${rank.requirements.easy}</td>
+                    <td>${rank.requirements.medium}</td>
+                    <td>${rank.requirements.hard}</td>
+                    <td>${rank.requirements.expert}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        function openMainGame() {
+            window.open('index.html', '_blank');
+        }
+        
+        const difficultyNames = {
+            'beginner': '乘法口诀基础',
+            'easy': '乘法口诀进阶',
+            'medium': '乘法口诀熟练',
+            'hard': '乘法进阶',
+            'expert': '乘法高级'
+        };
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+        });
+    </script>
+</body>
+</html> 

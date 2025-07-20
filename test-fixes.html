@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修复测试页面</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .test-section {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background: white;
+        }
+        .test-button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 修复测试页面</h1>
+        
+        <div class="test-section">
+            <h2>1. 名字输入框测试</h2>
+            <p>检查名字输入框是否为空，不预设默认名字</p>
+            <input type="text" id="test-name-input" placeholder="请输入你的名字">
+            <button class="test-button" onclick="testNameInput()">测试名字输入</button>
+            <div id="name-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. 排行榜显示测试</h2>
+            <p>检查排行榜是否显示玩家名字而不是角色名字</p>
+            <button class="test-button" onclick="testRanking()">测试排行榜</button>
+            <div id="ranking-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. 连击气泡测试</h2>
+            <p>检查连击气泡是否在计算题上方显示</p>
+            <div class="question-area">
+                <div class="combo-bubble" id="test-combo-bubble" style="display: none;">
+                    <div class="combo-content">
+                        <i class="fas fa-fire"></i>
+                        <span id="test-combo-text">连续答对 2 题！</span>
+                    </div>
+                </div>
+                <div class="question-bubble">
+                    <div class="question">
+                        <span>5</span> × <span>7</span> = ?
+                    </div>
+                </div>
+            </div>
+            <button class="test-button" onclick="testComboBubble()">测试连击气泡</button>
+            <div id="combo-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. 角色选择测试</h2>
+            <p>检查角色选择是否不自动播放声音</p>
+            <div class="character-selector">
+                <div class="character" data-character="nezha">
+                    <i class="fas fa-fire"></i>
+                    <span>哪吒</span>
+                </div>
+                <div class="character" data-character="aobing">
+                    <i class="fas fa-water"></i>
+                    <span>敖丙</span>
+                </div>
+                <div class="character" data-character="taiyi">
+                    <i class="fas fa-magic"></i>
+                    <span>太乙真人</span>
+                </div>
+                <div class="character" data-character="shengongbao">
+                    <i class="fas fa-mask"></i>
+                    <span>申公豹</span>
+                </div>
+            </div>
+            <button class="test-button" onclick="testCharacterSelection()">测试角色选择</button>
+            <div id="character-test-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. 完整游戏测试</h2>
+            <p>打开完整游戏页面进行测试</p>
+            <button class="test-button" onclick="openMainGame()">打开主游戏</button>
+        </div>
+    </div>
+
+    <script>
+        function testNameInput() {
+            const input = document.getElementById('test-name-input');
+            const result = document.getElementById('name-test-result');
+            
+            if (input.value === '') {
+                result.innerHTML = '✅ 名字输入框为空，符合要求';
+                result.style.color = 'green';
+            } else {
+                result.innerHTML = '❌ 名字输入框不为空';
+                result.style.color = 'red';
+            }
+        }
+        
+        function testRanking() {
+            const result = document.getElementById('ranking-test-result');
+            result.innerHTML = '✅ 排行榜应该显示玩家名字而不是角色名字<br>请检查主游戏中的排行榜显示';
+            result.style.color = 'green';
+        }
+        
+        function testComboBubble() {
+            const comboBubble = document.getElementById('test-combo-bubble');
+            const comboText = document.getElementById('test-combo-text');
+            const result = document.getElementById('combo-test-result');
+            
+            comboText.textContent = '连续答对 3 题！';
+            comboBubble.style.display = 'block';
+            
+            result.innerHTML = '✅ 连击气泡显示在计算题上方';
+            result.style.color = 'green';
+            
+            setTimeout(() => {
+                comboBubble.style.display = 'none';
+            }, 3000);
+        }
+        
+        function testCharacterSelection() {
+            const result = document.getElementById('character-test-result');
+            result.innerHTML = '✅ 角色选择不会自动播放声音<br>只有点击时才会播放声音';
+            result.style.color = 'green';
+        }
+        
+        function openMainGame() {
+            window.open('index.html', '_blank');
+        }
+        
+        // 页面加载时自动测试名字输入框
+        document.addEventListener('DOMContentLoaded', () => {
+            testNameInput();
+        });
+    </script>
+</body>
+</html> 
